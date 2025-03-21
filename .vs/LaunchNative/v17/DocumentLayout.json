@@ -1,0 +1,71 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "C:\\Users\\Asher\\source\\LaunchNative\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{2D23F603-8BCC-4A5F-9BD2-B7B94DA99830}|LaunchNative\\LaunchNative.vcxproj|C:\\Users\\Asher\\Source\\LaunchNative\\LaunchNative\\LaunchNative.c||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "RelativeMoniker": "D:0:0:{2D23F603-8BCC-4A5F-9BD2-B7B94DA99830}|LaunchNative\\LaunchNative.vcxproj|solutionrelative:LaunchNative\\LaunchNative.c||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{2D23F603-8BCC-4A5F-9BD2-B7B94DA99830}|LaunchNative\\LaunchNative.vcxproj|C:\\USERS\\ASHER\\SOURCE\\LAUNCHNATIVE\\PHNT\\NTLPCAPI.H||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "RelativeMoniker": "D:0:0:{2D23F603-8BCC-4A5F-9BD2-B7B94DA99830}|LaunchNative\\LaunchNative.vcxproj|solutionrelative:PHNT\\NTLPCAPI.H||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{BA03CF49-4B5A-4590-A4A9-CCFC060B1BFF}|NativeApp\\NativeApp.vcxproj|C:\\Users\\Asher\\source\\LaunchNative\\NativeApp\\NativeApp.c||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "RelativeMoniker": "D:0:0:{BA03CF49-4B5A-4590-A4A9-CCFC060B1BFF}|NativeApp\\NativeApp.vcxproj|solutionrelative:NativeApp\\NativeApp.c||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 301,
+          "SelectedChildIndex": 0,
+          "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "LaunchNative.c",
+              "DocumentMoniker": "C:\\Users\\Asher\\source\\LaunchNative\\LaunchNative\\LaunchNative.c",
+              "RelativeDocumentMoniker": "LaunchNative\\LaunchNative.c",
+              "ToolTip": "C:\\Users\\Asher\\source\\LaunchNative\\LaunchNative\\LaunchNative.c",
+              "RelativeToolTip": "LaunchNative\\LaunchNative.c",
+              "ViewState": "AQIAAOQAAAAAAAAAAAAAAJ8AAAAgAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000423|",
+              "WhenOpened": "2025-03-21T00:30:13.1Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "NativeApp.c",
+              "DocumentMoniker": "C:\\Users\\Asher\\source\\LaunchNative\\NativeApp\\NativeApp.c",
+              "RelativeDocumentMoniker": "NativeApp\\NativeApp.c",
+              "ToolTip": "C:\\Users\\Asher\\source\\LaunchNative\\NativeApp\\NativeApp.c",
+              "RelativeToolTip": "NativeApp\\NativeApp.c",
+              "ViewState": "AQIAAAwAAAAAAAAAAAAAACMAAAAYAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000423|",
+              "WhenOpened": "2025-03-20T06:07:37.415Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "ntlpcapi.h",
+              "DocumentMoniker": "C:\\Users\\Asher\\source\\LaunchNative\\phnt\\ntlpcapi.h",
+              "RelativeDocumentMoniker": "phnt\\ntlpcapi.h",
+              "ToolTip": "C:\\Users\\Asher\\source\\LaunchNative\\phnt\\ntlpcapi.h",
+              "RelativeToolTip": "phnt\\ntlpcapi.h",
+              "ViewState": "AQIAABkBAAAAAAAAAAAkwCwBAAAWAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000680|",
+              "WhenOpened": "2025-03-21T00:30:25.785Z",
+              "EditorCaption": ""
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
