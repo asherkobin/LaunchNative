@@ -28,11 +28,33 @@ NTSTATUS NtProcessStartup(PPEB peb)
         &MaxMessageLength,
         NULL,
         NULL);
-
-    Status = NtRequestPort(
-        &ServerPort,
+    /*
+    Status = NtRequestWaitReplyPort(
+        ServerPort,
+        &PortMessage,
         &PortMessage);
-
+        */
+#define InitializeMessageHeader(ph, l, t)                              \
+{                                                                      \
+    (ph)->u1.s1.TotalLength      = (USHORT)(l);                        \
+    (ph)->u1.s1.DataLength       = (USHORT)(l - sizeof(PORT_MESSAGE)); \
+    (ph)->u2.s2.Type             = (USHORT)(t);                        \
+    (ph)->u2.s2.DataInfoOffset   = 0;                                  \
+    (ph)->ClientId.UniqueProcess = NULL;                               \
+    (ph)->ClientId.UniqueThread  = NULL;                               \
+    (ph)->MessageId              = 0;                                  \
+    (ph)->ClientViewSize         = 0;                                  \
+}
+    InitializeMessageHeader(&PortMessage, sizeof(PortMessage), 0);
+    Status = NtRequestWaitReplyPort(
+        ServerPort,
+        &PortMessage,
+        &PortMessage);
+    /*
+    Status = NtRequestPort(
+        ServerPort,
+        &PortMessage);
+        */
     NtClose(ServerPort);
     
     return Status;

@@ -33,65 +33,41 @@ void DebugPrint(char* DebugString)
 
 void DebugPrintStatus(NTSTATUS Status)
 {
-	char Buffer[256];
-	HMODULE NtDllHandle;
-	UNICODE_STRING NtDllName;
-	ULONG DosStatus = RtlNtStatusToDosError(Status);
-	MESSAGE_RESOURCE_ENTRY* ResourceEntry;
-	NTSTATUS FindMessageStatus;
-
-	RtlInitUnicodeString(&NtDllName, L"KernelBase.dll");
-	LdrGetDllHandle(NULL, NULL, &NtDllName, &NtDllHandle);
-	
-	FindMessageStatus = RtlFindMessage(NtDllHandle, (ULONG_PTR) RT_MESSAGETABLE, 0, DosStatus, &ResourceEntry);
-	
-	if (FindMessageStatus == STATUS_SUCCESS && ResourceEntry->Flags & MESSAGE_RESOURCE_UNICODE)
+	if (Status == STATUS_SUCCESS)
 	{
-		ANSI_STRING Message = { 0 };
-		UNICODE_STRING UnicodeMessage;
-
-		RtlInitUnicodeString(&UnicodeMessage, (LPCWSTR) ResourceEntry->Text);
-		RtlUnicodeStringToAnsiString(&Message, &UnicodeMessage, TRUE);
-		__sprintf(Buffer, "Status:  0x%x\nMessage: %s", Status, Message.Buffer);
-		RtlFreeAnsiString(&Message);
+		DebugPrint("Status:  STATUS_SUCCESS\n");
 	}
 	else
 	{
-		__sprintf(Buffer, "Status:  0x%x\nMessage: %s", Status, "MESSAGE_RESOURCE_ENTRY Not Found");
+		char Buffer[256];
+		HMODULE NtDllHandle;
+		UNICODE_STRING NtDllName;
+		ULONG DosStatus = RtlNtStatusToDosError(Status);
+		MESSAGE_RESOURCE_ENTRY* ResourceEntry;
+		NTSTATUS FindMessageStatus;
+
+		RtlInitUnicodeString(&NtDllName, L"KernelBase.dll");
+		LdrGetDllHandle(NULL, NULL, &NtDllName, &NtDllHandle);
+
+		FindMessageStatus = RtlFindMessage(NtDllHandle, (ULONG_PTR) RT_MESSAGETABLE, 0, DosStatus, &ResourceEntry);
+
+		if (FindMessageStatus == STATUS_SUCCESS && ResourceEntry->Flags & MESSAGE_RESOURCE_UNICODE)
+		{
+			ANSI_STRING Message = { 0 };
+			UNICODE_STRING UnicodeMessage;
+
+			RtlInitUnicodeString(&UnicodeMessage, (LPCWSTR) ResourceEntry->Text);
+			RtlUnicodeStringToAnsiString(&Message, &UnicodeMessage, TRUE);
+			__sprintf(Buffer, "Status:  0x%x\nMessage: %s", Status, Message.Buffer);
+			RtlFreeAnsiString(&Message);
+		}
+		else
+		{
+			__sprintf(Buffer, "Status:  0x%x\nMessage: %s", Status, "MESSAGE_RESOURCE_ENTRY Not Found");
+		}
+
+		DebugPrint(Buffer);
 	}
-	
-	DebugPrint(Buffer);
-}
-
-void DebugPrintNtStatus(NTSTATUS Status)
-{
-	char Buffer[256];
-	HMODULE NtDllHandle;
-	UNICODE_STRING NtDllName;
-	MESSAGE_RESOURCE_ENTRY* ResourceEntry;
-	NTSTATUS FindMessageStatus;
-
-	RtlInitUnicodeString(&NtDllName, L"ntdll.dll");
-	LdrGetDllHandle(NULL, NULL, &NtDllName, &NtDllHandle);
-
-	FindMessageStatus = RtlFindMessage(NtDllHandle, (ULONG_PTR) RT_MESSAGETABLE, 0, Status, &ResourceEntry);
-
-	if (FindMessageStatus == STATUS_SUCCESS && ResourceEntry->Flags & MESSAGE_RESOURCE_UNICODE)
-	{
-		ANSI_STRING Message = { 0 };
-		UNICODE_STRING UnicodeMessage;
-
-		RtlInitUnicodeString(&UnicodeMessage, (LPCWSTR) ResourceEntry->Text);
-		RtlUnicodeStringToAnsiString(&Message, &UnicodeMessage, TRUE);
-		__sprintf(Buffer, "Status:  0x%x\nMessage: %s", Status, Message.Buffer);
-		RtlFreeAnsiString(&Message);
-	}
-	else
-	{
-		__sprintf(Buffer, "Status:  0x%x\nMessage: %s", Status, "MESSAGE_RESOURCE_ENTRY Not Found");
-	}
-
-	DebugPrint(Buffer);
 }
 
 void DebugPrintReturnStatus(char *FunctionName, NTSTATUS Status)
@@ -141,95 +117,33 @@ void DebugPrintProcessInformation(RTL_USER_PROCESS_INFORMATION *ProcessInformati
 	}
 }
 
-NTSTATUS LpcServerThread(PVOID ThreadParameter)
+int main()
 {
 	NTSTATUS Status;
-	HANDLE LpcServerPort = (HANDLE) ThreadParameter;
+	PCWSTR NativeAppPath = L"\\??\\C:\\Users\\Asher\\Source\\LaunchNative\\ARM64\\Debug\\NativeApp.exe";
+	UNICODE_STRING ImageName;
+	PRTL_USER_PROCESS_PARAMETERS ProcessParameters;
+	RTL_USER_PROCESS_INFORMATION ProcessInformation;
+	HANDLE ServerPort = NULL;
+	HANDLE ClientPort = NULL;
+	UNICODE_STRING LpcPortName;
+	OBJECT_ATTRIBUTES ObjectAttributes;
 	PORT_MESSAGE PortMessage;
-	HANDLE LpcClientPort;
+	ULONG MessageType = 0;
 	
-	Status = NtListenPort(LpcServerPort, &PortMessage);
-	DebugPrintReturnStatus("NtListenPort", Status);
-	
-	Status = NtAcceptConnectPort(&LpcClientPort, NULL, &PortMessage, TRUE, NULL, NULL);
-	DebugPrintReturnStatus("NtAcceptConnectPort", Status);
+	InitNtFunctions();
 
-	Status = NtCompleteConnectPort(LpcClientPort);
-	DebugPrintReturnStatus("NtCompleteConnectPort", Status);
-
-	Status = NtReplyWaitReceivePort(LpcClientPort, NULL, NULL, &PortMessage);
-	DebugPrintReturnStatus("NtReplyWaitReceivePort", Status);
-
-	NtClose(LpcClientPort);
-
-	return Status;
-}
-
-void InitLpcServer()
-{
-	HANDLE Port;
-	NTSTATUS Status;
-	UNICODE_STRING PortName;
-	OBJECT_ATTRIBUTES ObjectAttributes;;
-	HANDLE LpcServerThreadHandle;
-
-	RtlInitUnicodeString(&PortName, L"\\??\\LaunchNative");
-	InitializeObjectAttributes(&ObjectAttributes, &PortName, 0, NULL, NULL);
+	RtlInitUnicodeString(&LpcPortName, L"\\??\\LaunchNative");
+	InitializeObjectAttributes(&ObjectAttributes, &LpcPortName, 0, NULL, NULL);
 
 	Status = NtCreatePort(
-		&Port,
+		&ServerPort,
 		&ObjectAttributes,
 		0,
 		sizeof(PORT_MESSAGE),
 		0);
 
 	DebugPrintReturnStatus("NtCreatePort", Status);
-
-	Status = RtlCreateUserThread(
-		NtCurrentProcess(),
-		NULL,
-		TRUE,
-		0,
-		0,
-		0,
-		LpcServerThread,
-		Port,
-		&LpcServerThreadHandle,
-		NULL);
-
-	DebugPrintReturnStatus("RtlCreateUserThread", Status);
-
-	Status = NtResumeThread(LpcServerThreadHandle, NULL);
-	
-	/*
-	
-	THREAD_BASIC_INFORMATION ThreadBasicInfo;
-
-	Status = NtWaitForSingleObject(LpcServerThreadHandle, FALSE, NULL);
-
-	Status = NtQueryInformationThread(
-		LpcServerThreadHandle,
-		ThreadBasicInformation,
-		&ThreadBasicInfo,
-		sizeof(THREAD_BASIC_INFORMATION),
-		NULL);
-
-	DebugPrintReturnStatus("NtQueryInformationThread", Status);
-	DebugPrintReturnStatus("LpcServerThread ExitStatus", ThreadBasicInfo.ExitStatus);
-	*/
-}
-
-int main()
-{
-	NTSTATUS Status;
-
-	PCWSTR NativeAppPath = L"\\??\\C:\\Users\\Asher\\Source\\LaunchNative\\ARM64\\Debug\\NativeApp.exe";
-	UNICODE_STRING ImageName;
-	PRTL_USER_PROCESS_PARAMETERS ProcessParameters;
-	RTL_USER_PROCESS_INFORMATION ProcessInformation;
-
-	InitNtFunctions();
-	InitLpcServer();
 
 	RtlInitUnicodeString(&ImageName, NativeAppPath);
 
@@ -252,12 +166,61 @@ int main()
 	RtlDestroyProcessParameters(ProcessParameters);
 
 	NtResumeThread(ProcessInformation.ThreadHandle, NULL);
-	NtWaitForSingleObject(ProcessInformation.ProcessHandle, FALSE, NULL);
+
+	while (MessageType != LPC_PORT_CLOSED)
+	{
+		Status = NtReplyWaitReceivePort(
+			ServerPort,
+			NULL,
+			NULL,
+			&PortMessage);
+
+		MessageType = PortMessage.u2.s2.Type;
+
+		switch (MessageType)
+		{
+			case LPC_CONNECTION_REQUEST:
+				DebugPrint("** LPC_CONNECTION_REQUEST **\n");
+				Status = NtAcceptConnectPort(&ClientPort, NULL, &PortMessage, TRUE, NULL, NULL);
+				DebugPrintReturnStatus("NtAcceptConnectPort", Status);
+				Status = NtCompleteConnectPort(ClientPort);
+				DebugPrintReturnStatus("NtCompleteConnectPort", Status);
+				break;
+			case LPC_DATAGRAM: // NtRequestPort
+				DebugPrint("** LPC_DATAGRAM **\n");
+				break;
+			case LPC_REQUEST: // NtRequestWaitReplyPort
+				DebugPrint("** LPC_REQUEST **\n");
+				Status = NtReplyPort(ServerPort, &PortMessage);
+				// NtReplyWaitReplyPort
+				break;
+			case LPC_PORT_CLOSED:
+				DebugPrint("** LPC_PORT_CLOSED **\n");
+				NtWaitForSingleObject(ProcessInformation.ProcessHandle, FALSE, NULL);
+				NtClose(ProcessInformation.ThreadHandle);
+				NtClose(ProcessInformation.ProcessHandle);
+				DebugPrintProcessInformation(&ProcessInformation);
+				break;
+			default:
+				DebugPrint("** Unhandled LPC Message Type **\n");
+		}
+	}
 	
-	DebugPrintProcessInformation(&ProcessInformation);
+	if (ClientPort)
+		NtClose(ClientPort);
+	if (ServerPort)
+		NtClose(ServerPort);
 
-	NtClose(ProcessInformation.ThreadHandle);
-	NtClose(ProcessInformation.ProcessHandle);
+/*
+	HANDLE StdInputHandle = GetStdHandle(STD_INPUT_HANDLE);
+	WCHAR Buffer[2];
+	DWORD NumberOfCharsInBuffer = 0;
+	
+	ReadConsole(StdInputHandle, Buffer, 2, &NumberOfCharsInBuffer, NULL);
 
+	if (NumberOfCharsInBuffer == 2 && Buffer[0] == '\r' && Buffer[1] == '\n')
+	{
+	}
+*/
 	return 0;
 }
