@@ -3,6 +3,13 @@
 #include <phnt_windows.h>
 #include <phnt.h>
 
+typedef struct _NATIVE_APP_MESSAGE
+{
+    PORT_MESSAGE PortMessage;
+    WCHAR MessageText[32];
+
+} NATIVE_APP_MESSAGE, * PNATIVE_APP_MESSAGE;
+
 NTSTATUS NtProcessStartup(PPEB peb)
 {
     NTSTATUS Status;
@@ -10,7 +17,7 @@ NTSTATUS NtProcessStartup(PPEB peb)
     HANDLE ServerPort;
     ULONG MaxMessageLength = 0;
     SECURITY_QUALITY_OF_SERVICE QoS;
-    PORT_MESSAGE PortMessage;
+    NATIVE_APP_MESSAGE NativeAppMessage;
 
     RtlInitUnicodeString(&PortName, L"\\??\\LaunchNative");
 
@@ -45,11 +52,21 @@ NTSTATUS NtProcessStartup(PPEB peb)
     (ph)->MessageId              = 0;                                  \
     (ph)->ClientViewSize         = 0;                                  \
 }
-    InitializeMessageHeader(&PortMessage, sizeof(PortMessage), 0);
+    InitializeMessageHeader(&NativeAppMessage.PortMessage, sizeof(NativeAppMessage), 0);
+
+    NativeAppMessage.MessageText[0] = L'A';
+    NativeAppMessage.MessageText[1] = L's';
+    NativeAppMessage.MessageText[2] = L'h';
+    NativeAppMessage.MessageText[3] = L'e';
+    NativeAppMessage.MessageText[4] = L'r';
+    NativeAppMessage.MessageText[5] = L'\0';
+
+   // wcscpy(LpcMessage->MessageText, L"Message text through LPC");
+
     Status = NtRequestWaitReplyPort(
         ServerPort,
-        &PortMessage,
-        &PortMessage);
+        &NativeAppMessage.PortMessage,
+        &NativeAppMessage.PortMessage);
     /*
     Status = NtRequestPort(
         ServerPort,

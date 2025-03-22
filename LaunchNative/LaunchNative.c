@@ -4,6 +4,13 @@
 typedef int (*PSPRINTF)(char* buffer, const char* format, ...);
 PSPRINTF __sprintf = NULL;
 
+typedef struct _NATIVE_APP_MESSAGE
+{
+	PORT_MESSAGE PortMessage;
+	WCHAR MessageText[32];
+
+} NATIVE_APP_MESSAGE, *PNATIVE_APP_MESSAGE;
+
 void InitNtFunctions()
 {
 	HMODULE NtDllHandle;
@@ -35,7 +42,7 @@ void DebugPrintStatus(NTSTATUS Status)
 {
 	if (Status == STATUS_SUCCESS)
 	{
-		DebugPrint("Status:  STATUS_SUCCESS\n");
+		DebugPrint("Status: STATUS_SUCCESS\n");
 	}
 	else
 	{
@@ -128,7 +135,7 @@ int main()
 	HANDLE ClientPort = NULL;
 	UNICODE_STRING LpcPortName;
 	OBJECT_ATTRIBUTES ObjectAttributes;
-	PORT_MESSAGE PortMessage;
+	NATIVE_APP_MESSAGE NativeAppMessage;
 	ULONG MessageType = 0;
 	
 	InitNtFunctions();
@@ -140,7 +147,7 @@ int main()
 		&ServerPort,
 		&ObjectAttributes,
 		0,
-		sizeof(PORT_MESSAGE),
+		sizeof(NATIVE_APP_MESSAGE),
 		0);
 
 	DebugPrintReturnStatus("NtCreatePort", Status);
@@ -173,15 +180,15 @@ int main()
 			ServerPort,
 			NULL,
 			NULL,
-			&PortMessage);
+			&NativeAppMessage.PortMessage);
 
-		MessageType = PortMessage.u2.s2.Type;
+		MessageType = NativeAppMessage.PortMessage.u2.s2.Type;
 
 		switch (MessageType)
 		{
 			case LPC_CONNECTION_REQUEST:
 				DebugPrint("** LPC_CONNECTION_REQUEST **\n");
-				Status = NtAcceptConnectPort(&ClientPort, NULL, &PortMessage, TRUE, NULL, NULL);
+				Status = NtAcceptConnectPort(&ClientPort, NULL, &NativeAppMessage.PortMessage, TRUE, NULL, NULL);
 				DebugPrintReturnStatus("NtAcceptConnectPort", Status);
 				Status = NtCompleteConnectPort(ClientPort);
 				DebugPrintReturnStatus("NtCompleteConnectPort", Status);
@@ -191,15 +198,16 @@ int main()
 				break;
 			case LPC_REQUEST: // NtRequestWaitReplyPort
 				DebugPrint("** LPC_REQUEST **\n");
-				Status = NtReplyPort(ServerPort, &PortMessage);
+				Status = NtReplyPort(ServerPort, &NativeAppMessage.PortMessage);
+				DebugPrintReturnStatus("NtReplyPort", Status);
 				// NtReplyWaitReplyPort
 				break;
 			case LPC_PORT_CLOSED:
 				DebugPrint("** LPC_PORT_CLOSED **\n");
 				NtWaitForSingleObject(ProcessInformation.ProcessHandle, FALSE, NULL);
+				DebugPrintProcessInformation(&ProcessInformation);
 				NtClose(ProcessInformation.ThreadHandle);
 				NtClose(ProcessInformation.ProcessHandle);
-				DebugPrintProcessInformation(&ProcessInformation);
 				break;
 			default:
 				DebugPrint("** Unhandled LPC Message Type **\n");
