@@ -3,10 +3,22 @@
 #include <phnt_windows.h>
 #include <phnt.h>
 
+#define InitializeMessageHeader(ph, l, t)                              \
+{                                                                      \
+    (ph)->u1.s1.TotalLength      = (USHORT)(l);                        \
+    (ph)->u1.s1.DataLength       = (USHORT)(l - sizeof(PORT_MESSAGE)); \
+    (ph)->u2.s2.Type             = (USHORT)(t);                        \
+    (ph)->u2.s2.DataInfoOffset   = 0;                                  \
+    (ph)->ClientId.UniqueProcess = NULL;                               \
+    (ph)->ClientId.UniqueThread  = NULL;                               \
+    (ph)->MessageId              = 0;                                  \
+    (ph)->ClientViewSize         = 0;                                  \
+}
+
 typedef struct _NATIVE_APP_MESSAGE
 {
     PORT_MESSAGE PortMessage;
-    WCHAR MessageText[32];
+    char MessageText[32];
 
 } NATIVE_APP_MESSAGE, * PNATIVE_APP_MESSAGE;
 
@@ -35,33 +47,22 @@ NTSTATUS NtProcessStartup(PPEB peb)
         &MaxMessageLength,
         NULL,
         NULL);
-    /*
-    Status = NtRequestWaitReplyPort(
-        ServerPort,
-        &PortMessage,
-        &PortMessage);
-        */
-#define InitializeMessageHeader(ph, l, t)                              \
-{                                                                      \
-    (ph)->u1.s1.TotalLength      = (USHORT)(l);                        \
-    (ph)->u1.s1.DataLength       = (USHORT)(l - sizeof(PORT_MESSAGE)); \
-    (ph)->u2.s2.Type             = (USHORT)(t);                        \
-    (ph)->u2.s2.DataInfoOffset   = 0;                                  \
-    (ph)->ClientId.UniqueProcess = NULL;                               \
-    (ph)->ClientId.UniqueThread  = NULL;                               \
-    (ph)->MessageId              = 0;                                  \
-    (ph)->ClientViewSize         = 0;                                  \
-}
+
     InitializeMessageHeader(&NativeAppMessage.PortMessage, sizeof(NativeAppMessage), 0);
 
-    NativeAppMessage.MessageText[0] = L'A';
-    NativeAppMessage.MessageText[1] = L's';
-    NativeAppMessage.MessageText[2] = L'h';
-    NativeAppMessage.MessageText[3] = L'e';
-    NativeAppMessage.MessageText[4] = L'r';
-    NativeAppMessage.MessageText[5] = L'\0';
+    NativeAppMessage.MessageText[0] = 'A';
+    NativeAppMessage.MessageText[1] = 's';
+    NativeAppMessage.MessageText[2] = 'h';
+    NativeAppMessage.MessageText[3] = 'e';
+    NativeAppMessage.MessageText[4] = 'r';
+    NativeAppMessage.MessageText[5] = '\0';
 
-   // wcscpy(LpcMessage->MessageText, L"Message text through LPC");
+    Status = NtRequestWaitReplyPort(
+        ServerPort,
+        &NativeAppMessage.PortMessage,
+        &NativeAppMessage.PortMessage);
+ 
+    InitializeMessageHeader(&NativeAppMessage.PortMessage, sizeof(NativeAppMessage), 0);
 
     Status = NtRequestWaitReplyPort(
         ServerPort,
@@ -70,9 +71,9 @@ NTSTATUS NtProcessStartup(PPEB peb)
     /*
     Status = NtRequestPort(
         ServerPort,
-        &PortMessage);
+        &NativeAppMessage.PortMessage);
         */
     NtClose(ServerPort);
-    
+ 
     return Status;
 }

@@ -7,7 +7,7 @@ PSPRINTF __sprintf = NULL;
 typedef struct _NATIVE_APP_MESSAGE
 {
 	PORT_MESSAGE PortMessage;
-	WCHAR MessageText[32];
+	char MessageText[32];
 
 } NATIVE_APP_MESSAGE, *PNATIVE_APP_MESSAGE;
 
@@ -165,7 +165,7 @@ int main()
 		&ImageName,
 		0,
 		ProcessParameters,
-		NULL, NULL, NULL, FALSE, NULL, NULL,
+		NULL, NULL, NULL, TRUE, NULL, NULL,
 		&ProcessInformation);
 
 	DebugPrintReturnStatus("RtlCreateUserProcess", Status);
@@ -195,9 +195,19 @@ int main()
 				break;
 			case LPC_DATAGRAM: // NtRequestPort
 				DebugPrint("** LPC_DATAGRAM **\n");
+				DebugPrint(NativeAppMessage.MessageText);
+				DebugPrint("\n");
 				break;
 			case LPC_REQUEST: // NtRequestWaitReplyPort
 				DebugPrint("** LPC_REQUEST **\n");
+				DebugPrint(NativeAppMessage.MessageText);
+				DebugPrint("\n");
+				NativeAppMessage.MessageText[0] = L'K';
+				NativeAppMessage.MessageText[1] = L'o';
+				NativeAppMessage.MessageText[2] = L'b';
+				NativeAppMessage.MessageText[3] = L'i';
+				NativeAppMessage.MessageText[4] = L'n';
+				NativeAppMessage.MessageText[5] = L'\0';
 				Status = NtReplyPort(ServerPort, &NativeAppMessage.PortMessage);
 				DebugPrintReturnStatus("NtReplyPort", Status);
 				// NtReplyWaitReplyPort
@@ -219,16 +229,5 @@ int main()
 	if (ServerPort)
 		NtClose(ServerPort);
 
-/*
-	HANDLE StdInputHandle = GetStdHandle(STD_INPUT_HANDLE);
-	WCHAR Buffer[2];
-	DWORD NumberOfCharsInBuffer = 0;
-	
-	ReadConsole(StdInputHandle, Buffer, 2, &NumberOfCharsInBuffer, NULL);
-
-	if (NumberOfCharsInBuffer == 2 && Buffer[0] == '\r' && Buffer[1] == '\n')
-	{
-	}
-*/
-	return 0;
+	return STATUS_SUCCESS;
 }
