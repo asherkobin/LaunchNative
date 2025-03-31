@@ -15,7 +15,7 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="LaunchNative.c">
+    <ClCompile Include="MapViewTwo.c">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

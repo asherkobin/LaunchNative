@@ -15,7 +15,7 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="TestApp.c">
+    <ClCompile Include="MapViewOne.c">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
