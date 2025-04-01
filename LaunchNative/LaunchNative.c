@@ -103,7 +103,7 @@ void DebugPrintReturnStatus(char *FunctionName, NTSTATUS Status)
 	RtlFreeHeap(RtlGetCurrentPeb()->ProcessHeap, 0, Buffer);
 }
 
-void DebugPrintProcessInformation(RTL_USER_PROCESS_INFORMATION *ProcessInformation)
+NTSTATUS DebugPrintProcessInformation(RTL_USER_PROCESS_INFORMATION *ProcessInformation)
 {
 	PROCESS_BASIC_INFORMATION BasicInformation;
 
@@ -114,14 +114,16 @@ void DebugPrintProcessInformation(RTL_USER_PROCESS_INFORMATION *ProcessInformati
 		sizeof(BasicInformation),
 		NULL);
 
-	if (!Status)
-	{
-		DebugPrintReturnStatus("Process ExitStatus", BasicInformation.ExitStatus);
-	}
-	else
+	if (!NT_SUCCESS(Status))
 	{
 		DebugPrint("NtQueryInformationProcess Failed!");
+
+		return Status;
 	}
+	
+	DebugPrintReturnStatus("Process ExitStatus", BasicInformation.ExitStatus);
+
+	return BasicInformation.ExitStatus;
 }
 
 int main()
@@ -140,7 +142,7 @@ int main()
 	
 	InitNtFunctions();
 
-	RtlInitUnicodeString(&LpcPortName, L"\\??\\LaunchNative");
+	RtlInitUnicodeString(&LpcPortName, L"\\??\\NativeAppPort");
 	InitializeObjectAttributes(&ObjectAttributes, &LpcPortName, 0, NULL, NULL);
 
 	Status = NtCreatePort(
@@ -173,6 +175,20 @@ int main()
 	RtlDestroyProcessParameters(ProcessParameters);
 
 	NtResumeThread(ProcessInformation.ThreadHandle, NULL);
+	
+	LARGE_INTEGER WaitTimeout;
+
+	WaitTimeout.QuadPart = 1000 * -10000LL;
+	Status = NtWaitForSingleObject(ProcessInformation.ProcessHandle, FALSE, &WaitTimeout);
+
+	if (Status != STATUS_TIMEOUT)
+	{
+		Status = DebugPrintProcessInformation(&ProcessInformation);
+		NtClose(ProcessInformation.ThreadHandle);
+		NtClose(ProcessInformation.ProcessHandle);
+
+		return Status;
+	}
 
 	while (MessageType != LPC_PORT_CLOSED)
 	{

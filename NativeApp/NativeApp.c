@@ -31,7 +31,7 @@ NTSTATUS NtProcessStartup(PPEB peb)
     SECURITY_QUALITY_OF_SERVICE QoS;
     NATIVE_APP_MESSAGE NativeAppMessage;
 
-    RtlInitUnicodeString(&PortName, L"\\??\\LaunchNative");
+    RtlInitUnicodeString(&PortName, L"\\??\\NativeAppPort");
 
     QoS.Length = sizeof(QoS);
     QoS.ImpersonationLevel = SecurityImpersonation;
