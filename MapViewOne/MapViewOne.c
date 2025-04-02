@@ -4,6 +4,20 @@
 typedef int (*PSPRINTF)(char* buffer, const char* format, ...);
 PSPRINTF __sprintf = NULL;
 
+void WaitForEnterKeyPress()
+{
+	WCHAR Buffer[2];
+	DWORD cchRead = 0;
+
+	while (TRUE)
+	{
+		ReadConsole(GetStdHandle(STD_INPUT_HANDLE), Buffer, 2, &cchRead, NULL);
+
+		if (cchRead == 2 && Buffer[0] == L'\r' && Buffer[1] == L'\n')
+			return;
+	} 
+}
+
 void InitNtFunctions()
 {
 	HMODULE NtDllHandle;
@@ -99,12 +113,17 @@ int main()
 	
 		ZeroMemory(Buffer, BUFFER_LEN);
 		CopyMemory(Buffer, L"Asher Kobin", (10 + 1) * 2);
-
-		Sleep(5000);
+		
+		WriteConsole(GetStdHandle(STD_OUTPUT_HANDLE), Buffer, 11, NULL, NULL);
+		WaitForEnterKeyPress();
+		
+		WriteConsole(GetStdHandle(STD_OUTPUT_HANDLE), Buffer, 11, NULL, NULL);
+		WaitForEnterKeyPress();
 
 		UnmapViewOfFile(Buffer);
 
 		CloseHandle(hMapFile);
 	}
+
 	return 0;
 }

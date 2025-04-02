@@ -102,7 +102,8 @@ int main()
 			BUFFER_LEN);
 
 		WriteConsole(GetStdHandle(STD_OUTPUT_HANDLE), Buffer, 11, NULL, NULL);
-		ReadConsole(GetStdHandle(STD_INPUT_HANDLE), Buffer, 2, NULL, NULL);
+
+		CopyMemory(Buffer, L"Kobin Asher", (10 + 1) * 2);
 
 		UnmapViewOfFile(Buffer);
 
