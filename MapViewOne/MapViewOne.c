@@ -1,3 +1,5 @@
+#define PHNT_NO_INLINE_INIT_STRING
+
 #include <phnt_windows.h>
 #include <phnt.h>
 
@@ -87,6 +89,11 @@ void DebugPrintErrorMessage(ULONG ErrorCode)
 
 int main()
 {
+	char szName = "Asher Kobin";
+	UINT cchName = 0;
+
+	STRING String;
+	RtlInitAnsiString(&String, "AsherJK");
 	InitNtFunctions();
 
 	LPWSTR Buffer = NULL;
