@@ -6,6 +6,23 @@
 typedef int (*PSPRINTF)(char* buffer, const char* format, ...);
 PSPRINTF __sprintf = NULL;
 
+void InitNtFunctions()
+{
+	HMODULE NtDllHandle;
+	UNICODE_STRING NtDllName;
+	STRING FunctionName;
+
+	RtlInitUnicodeString(&NtDllName, L"ntdll.dll");
+	LdrGetDllHandle(NULL, NULL, &NtDllName, &NtDllHandle);
+	RtlInitString(&FunctionName, "sprintf");
+	LdrGetProcedureAddress(NtDllHandle, &FunctionName, 0, (PVOID*)&__sprintf);
+}
+
+void TestASM()
+{
+	STRING String;
+	RtlInitAnsiString(&String, "425-443-8700");}
+
 void WaitForEnterKeyPress()
 {
 	WCHAR Buffer[2];
@@ -18,18 +35,6 @@ void WaitForEnterKeyPress()
 		if (cchRead == 2 && Buffer[0] == L'\r' && Buffer[1] == L'\n')
 			return;
 	} 
-}
-
-void InitNtFunctions()
-{
-	HMODULE NtDllHandle;
-	UNICODE_STRING NtDllName;
-	STRING FunctionName;
-
-	RtlInitUnicodeString(&NtDllName, L"ntdll.dll");
-	LdrGetDllHandle(NULL, NULL, &NtDllName, &NtDllHandle);
-	RtlInitString(&FunctionName, "sprintf");
-	LdrGetProcedureAddress(NtDllHandle, &FunctionName, 0, (PVOID*)&__sprintf);
 }
 
 void DebugPrint(char* DebugString)
@@ -89,12 +94,8 @@ void DebugPrintErrorMessage(ULONG ErrorCode)
 
 int main()
 {
-	char szName = "Asher Kobin";
-	UINT cchName = 0;
-
-	STRING String;
-	RtlInitAnsiString(&String, "AsherJK");
-	InitNtFunctions();
+	//InitNtFunctions();
+	TestASM();
 
 	LPWSTR Buffer = NULL;
 	HANDLE hMapFile = CreateFileMapping(
@@ -119,7 +120,7 @@ int main()
 			BUFFER_LEN);
 	
 		ZeroMemory(Buffer, BUFFER_LEN);
-		CopyMemory(Buffer, L"Asher Kobin", (10 + 1) * 2);
+		CopyMemory(Buffer, L"Bruce Kobin", (10 + 1) * 2);
 		
 		WriteConsole(GetStdHandle(STD_OUTPUT_HANDLE), Buffer, 11, NULL, NULL);
 		WaitForEnterKeyPress();
