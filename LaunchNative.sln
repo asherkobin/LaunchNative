@@ -13,6 +13,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "MapViewTwo", "MapViewTwo\Ma
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "MASMLib", "MASMLib\MASMLib.vcxproj", "{06DFC2D2-91FA-41A4-AC7D-43F118D7AD3A}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ARMLib", "ARMLib\ARMLib.vcxproj", "{B85345F1-0E0B-479C-B6D8-D7A5719F74AB}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|ARM64 = Debug|ARM64
@@ -39,6 +41,10 @@ Global
 		{06DFC2D2-91FA-41A4-AC7D-43F118D7AD3A}.Debug|ARM64.Build.0 = Debug|Win32
 		{06DFC2D2-91FA-41A4-AC7D-43F118D7AD3A}.Release|ARM64.ActiveCfg = Release|ARM64
 		{06DFC2D2-91FA-41A4-AC7D-43F118D7AD3A}.Release|ARM64.Build.0 = Release|ARM64
+		{B85345F1-0E0B-479C-B6D8-D7A5719F74AB}.Debug|ARM64.ActiveCfg = Debug|ARM64
+		{B85345F1-0E0B-479C-B6D8-D7A5719F74AB}.Debug|ARM64.Build.0 = Debug|ARM64
+		{B85345F1-0E0B-479C-B6D8-D7A5719F74AB}.Release|ARM64.ActiveCfg = Release|ARM64
+		{B85345F1-0E0B-479C-B6D8-D7A5719F74AB}.Release|ARM64.Build.0 = Release|ARM64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
