@@ -21,7 +21,7 @@ void InitNtFunctions()
 void TestASM()
 {
 	STRING String;
-	RtlInitAnsiString(&String, "425-443-8700");}
+	RtlInitAnsiString(&String, "Apple iPhone");}
 
 void WaitForEnterKeyPress()
 {
