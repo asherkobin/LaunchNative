@@ -15,14 +15,13 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <None Include="hello.asm">
+    <MARMASM Include="strlen.asm">
       <Filter>Source Files</Filter>
-    </None>
-    <None Include="..\NativeApp\hello.S">
+    </MARMASM>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="strlen.1.c">
       <Filter>Source Files</Filter>
-    </None>
-    <None Include="hello.S">
-      <Filter>Source Files</Filter>
-    </None>
+    </ClCompile>
   </ItemGroup>
 </Project>

@@ -30,7 +30,7 @@
     <VCProjectVersion>17.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
     <ProjectGuid>{d16a5edc-96b7-48d1-86a9-444fad96741a}</ProjectGuid>
-    <RootNamespace>AddTwoNumbes</RootNamespace>
+    <RootNamespace>AddTwoNumbers</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
@@ -183,10 +183,13 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="..\AddTwoNumbers\add_two_numbers.c" />
+    <ClCompile Include="..\ARMLib\add_two_numbers.c" />
   </ItemGroup>
   <ItemGroup>
-    <MARMASM Include="..\AddTwoNumbers\add_two_numbers_extern.asm" />
+	<MARMASM Include="..\ARMLib\add_two_numbers_extern.asm" />
+  </ItemGroup>
+  <ItemGroup>
+    <MARMASM Include="..\ARMLib\strlen.asm" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

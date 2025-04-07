@@ -15,13 +15,13 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\ARMLib\hello_c.c">
+    <ClCompile Include="..\AddTwoNumbers\add_two_numbers.c">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <MASM Include="..\ARMLib\hello_asm.asm">
+    <MARMASM Include="..\AddTwoNumbers\add_two_numbers_extern.asm">
       <Filter>Source Files</Filter>
-    </MASM>
+    </MARMASM>
   </ItemGroup>
 </Project>
