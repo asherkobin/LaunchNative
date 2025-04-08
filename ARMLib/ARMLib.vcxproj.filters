@@ -20,7 +20,7 @@
     </MARMASM>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="strlen.1.c">
+    <ClCompile Include="strlen.c">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
