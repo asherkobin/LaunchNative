@@ -186,7 +186,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <MARMASM Include="strlen.asm" />
+    <MARMASM Include="strlen_extern.asm" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="strlen.c" />

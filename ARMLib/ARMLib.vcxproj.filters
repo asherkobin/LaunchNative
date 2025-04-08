@@ -15,7 +15,7 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <MARMASM Include="strlen.asm">
+    <MARMASM Include="strlen_extern.asm">
       <Filter>Source Files</Filter>
     </MARMASM>
   </ItemGroup>

@@ -1,7 +1,7 @@
 	AREA	|.text|, CODE, READONLY
-	EXPORT	strlen
+	EXPORT	arm_strlen
 
-strlen
+arm_strlen
 
 	cbz         x0,null_string			; do nothing for a NULL sring
 
@@ -15,7 +15,9 @@ non_zero_character
 	mov			x0,x8					; x1 is returned to the calller
 
 zero_length_string
+	mov			x0,#0
 null_string
+	mov			x0,#0
 	ret									; mission complee!
 
 END
