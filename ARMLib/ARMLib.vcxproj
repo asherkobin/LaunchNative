@@ -190,6 +190,12 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="strlen.c" />
+    <ClCompile Include="strlen_unicode.c" />
+  </ItemGroup>
+  <ItemGroup>
+    <MARMASM Include="strlen_unicode_extern.asm">
+      <FileType>Document</FileType>
+    </MARMASM>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

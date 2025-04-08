@@ -18,11 +18,6 @@ void InitNtFunctions()
 	LdrGetProcedureAddress(NtDllHandle, &FunctionName, 0, (PVOID*)&__sprintf);
 }
 
-void TestASM()
-{
-	STRING String;
-	RtlInitAnsiString(&String, "Apple iPhone");}
-
 void WaitForEnterKeyPress()
 {
 	WCHAR Buffer[2];
@@ -94,8 +89,7 @@ void DebugPrintErrorMessage(ULONG ErrorCode)
 
 int main()
 {
-	//InitNtFunctions();
-	TestASM();
+	InitNtFunctions();
 
 	LPWSTR Buffer = NULL;
 	HANDLE hMapFile = CreateFileMapping(

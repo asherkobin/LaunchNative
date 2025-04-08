@@ -1,22 +1,22 @@
-extern int arm_strlen(const char* str);
-
 #include <windows.h>
 #include <strsafe.h>
 
-int main()
+extern int arm_strlen(const char* str);
+
+int xmain()
 {
-	char *str_list[] =
+	char* str_list[] =
 	{
-		"DUMMY",
-		"asdf",
-		".",
+		"ARM64 Assembly",
+		"Visual Studio 2022",
 		"The silver spot price today is $30.38 USD.",
-		NULL,
+		"The gold spot price today is $3,013.80 USD.",
 		"Charles Leclerc is from Monaco",
 		"",
+		".",
+		" ",
 		"pi = 3.14",
-		"The gold spot price today is $3,013.80 USD.",
-		"asdfasdfsadfsdaf"
+		"macOS Sequoia 15.3.2"
 	};
 
 	int num_strs = sizeof(str_list) / 8;

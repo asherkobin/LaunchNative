@@ -1,7 +1,7 @@
-extern int add_two_numbers(int a, int b);
-
-#include <Windows.h>
+#include <windows.h>
 #include <strsafe.h>
+
+extern int add_two_numbers(int a, int b);
 
 int main()
 {

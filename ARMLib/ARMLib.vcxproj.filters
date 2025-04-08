@@ -18,8 +18,14 @@
     <MARMASM Include="strlen_extern.asm">
       <Filter>Source Files</Filter>
     </MARMASM>
+    <MARMASM Include="strlen_unicode_extern.asm">
+      <Filter>Source Files</Filter>
+    </MARMASM>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="strlen_unicode.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="strlen.c">
       <Filter>Source Files</Filter>
     </ClCompile>
